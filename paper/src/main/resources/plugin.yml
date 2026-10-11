@@ -1,0 +1,24 @@
+name: SMPBridge
+version: '1.0.0'
+main: dev.smpbridge.paper.SmpBridgePaper
+api-version: '1.21'
+author: SMPBridge
+description: Connects this Paper server to the SMP Discord bot (logs, chat, backups, AutoTotem detector)
+commands:
+  smpbridge:
+    description: SMPBridge admin command
+    usage: /smpbridge <status|reload|test|alert|punish|refund|totem>
+    permission: smpbridge.admin
+permissions:
+  smpbridge.admin:
+    description: Use /smpbridge
+    default: op
+  smpbridge.staff:
+    description: Staff - their punishment commands are sent to Discord
+    default: op
+  smpbridge.alerts:
+    description: Receives AutoTotem alerts in game
+    default: op
+  smpbridge.bypass:
+    description: Never checked by the AutoTotem detector
+    default: false

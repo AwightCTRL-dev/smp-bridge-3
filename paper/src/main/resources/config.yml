@@ -1,0 +1,43 @@
+# SMPBridge (Paper) - run  /bridge info  in Discord to get bot-url and token
+bot-url: "ws://YOUR_BOT_HOST:PORT"
+token: "PASTE_TOKEN_FROM_/bridge_info"
+
+# the name of this server in the bot - keep "smp"
+id: "smp"
+
+# ---- what is sent to Discord ----
+forward-console: true          # live console -> #console
+forward-chat: true             # in-game chat -> #smp-chat
+forward-joins: true            # join / leave -> #join-leave
+forward-deaths: true           # deaths: exact coordinates, biome (Void), every lost item, refund id -> #death-logs
+report-ping: true              # real player ping (Paper talks to players directly)
+
+# Staff punishment commands typed in game (ban, kick, mute ...). A player's command is only sent if they have
+# watch-require-permission, console commands are always sent. Empty list = default command list.
+forward-player-commands: false
+watch-require-permission: "smpbridge.staff"
+watch-commands: []
+
+# ---- backups (started from Discord: /backup now, or automatically every 24 h) ----
+backup-enabled: true
+# The WHOLE server folder is backed up. List folders here ONLY if you want to skip them, e.g. ["logs", "cache"]
+backup-exclude: []
+
+# ---- built-in AutoTotem detector ----
+# After a totem pops, how long until a new totem is in the off hand? The player's ping is subtracted, what is left
+# is the reaction time. Humans are slow and vary a lot, hacks are fast and/or too consistent.
+autototem:
+  enabled: true
+  in-game-alerts: true           # tell online staff with permission smpbridge.alerts
+  min-tps: 18.0                  # no checks while the server lags
+  max-ping: 350                  # no checks for players with a worse ping
+  min-reaction-ms: 60            # A: re-totem faster than any human (after removing ping)
+  chain-reaction-ms: 100         # C: re-totems this fast ...
+  chain-count: 3                 #    ... this many times within 12 seconds
+  samples: 8                     # B: how many re-totems are compared
+  max-std-dev-ms: 12             # B: standard deviation below this ...
+  max-range-ms: 40               #    ... and fastest-slowest gap below this ...
+  max-mean-ms: 600               #    ... and average below this = robotic timing
+  window-seconds: 600            # B: older samples are forgotten
+  alert-cooldown-ms: 3000        # at most one alert per check every 3 s per player
+  bypass-permission: "smpbridge.bypass"
