@@ -1,0 +1,43 @@
+name: Build SMPBridge plugin
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Phone-friendly: if you uploaded smp-bridge-plugins.zip as-is, unpack it first.
+      - name: Unpack smp-bridge-plugins.zip (only if present)
+        run: |
+          if [ -f smp-bridge-plugins.zip ]; then
+            rm -rf velocity
+            unzip -q -o smp-bridge-plugins.zip -d _unz
+            cp -r _unz/smp-bridge-plugins/. .
+          fi
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10.2'
+
+      - name: Build the Paper jar
+        run: |
+          gradle :paper:jar --no-daemon
+          mkdir -p dist
+          cp paper/build/libs/SMPBridge-Paper.jar dist/SMPBridge-Paper.jar
+          unzip -l dist/SMPBridge-Paper.jar | grep -q 'plugin.yml'
+          ls -la dist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SMPBridge-plugin
+          path: dist/SMPBridge-Paper.jar
+          if-no-files-found: error
